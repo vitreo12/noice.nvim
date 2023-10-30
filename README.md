@@ -1,3 +1,8 @@
+# MODIFICATIONS:
+
+`/util/nui.lua`: lines 221-223
+`/view/nui.lua`: lines 61-62
+
 # 💥 Noice _(Nice, Noise, Notice)_
 
 Highly experimental plugin that completely replaces the UI for `messages`, `cmdline` and the `popupmenu`.
