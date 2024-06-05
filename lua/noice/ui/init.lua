@@ -4,7 +4,6 @@ local Config = require("noice.config")
 local Util = require("noice.util")
 local Router = require("noice.message.router")
 local Manager = require("noice.message.manager")
-local Hacks = require("noice.util.hacks")
 
 ---@alias NoiceEvent MsgEvent|CmdlineEvent|NotifyEvent|LspEvent
 ---@alias NoiceKind MsgKind|NotifyLevel|LspKind
@@ -39,7 +38,7 @@ function M.setup()
   ---@type table<string, boolean>
   local options = {}
   for ext, widget in pairs(widgets) do
-    -- only enable if configured and not enabeled in the GUI
+    -- only enable if configured and not enabled in the GUI
     if Config.options[ext].enabled and not ui_widgets[ext] then
       options["ext_" .. ext] = true
       M._handlers[widget] = _G.require("noice.ui." .. widget)
@@ -63,6 +62,10 @@ function M.enable()
       end)
     end
     return
+  end
+
+  if options.ext_messages then
+    require("noice.ui.msg").setup()
   end
 
   local safe_handle = Util.protect(M.handle, { msg = "An error happened while handling a ui event" })
@@ -93,8 +96,16 @@ function M.enable()
 
     -- check if we need to update the ui
     if Manager.tick() > tick then
-      -- Util.debug(vim.inspect({ event, stack_level, Util.is_blocking(), tick, kind, ... }))
-      if Util.is_blocking() and event ~= "msg_ruler" and kind ~= "search_count" then
+      Util.debug(function()
+        local _, blocking = Util.is_blocking()
+        return { event, "sl:" .. stack_level, "tick:" .. tick, blocking or false, kind }
+      end)
+      if
+        require("noice.util.ffi").textlock == 0
+        and Util.is_blocking()
+        and event ~= "msg_ruler"
+        and kind ~= "search_count"
+      then
         Util.try(Router.update)
       end
     else

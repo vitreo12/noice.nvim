@@ -1,4 +1,4 @@
-*noice.nvim.txt*        For Neovim >= 0.8.0       Last change: 2023 October 25
+*noice.nvim.txt*         For Neovim >= 0.8.0         Last change: 2024 June 04
 
 ==============================================================================
 Table of Contents                               *noice.nvim-table-of-contents*
@@ -17,6 +17,7 @@ Table of Contents                               *noice.nvim-table-of-contents*
   - Telescope               |noice.nvim-noice-(nice,-noise,-notice)-telescope|
   - Usage                       |noice.nvim-noice-(nice,-noise,-notice)-usage|
   - Highlight Groups |noice.nvim-noice-(nice,-noise,-notice)-highlight-groups|
+2. Links                                                    |noice.nvim-links|
 
 ==============================================================================
 1. Noice (Nice, Noise, Notice)        *noice.nvim-noice-(nice,-noise,-notice)*
@@ -51,7 +52,7 @@ issues have already been fixed upstream. Check this tracking issue
 
 REQUIREMENTS             *noice.nvim-noice-(nice,-noise,-notice)-requirements*
 
-- Neovim >= 0.8.0 **(nightly highly recommended)**
+- Neovim >= 0.9.0 **(nightly highly recommended)**
 - nui.nvim <https://github.com/MunifTanjim/nui.nvim>used for proper rendering and multiple views
 - nvim-notify <https://github.com/rcarriga/nvim-notify>notification view _(optional)_
 - a Nerd Font <https://www.nerdfonts.com/> **(optional)**
@@ -92,7 +93,7 @@ Suggested setup:
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
+          ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
         },
       },
       -- you can enable a preset for easier configuration
@@ -216,6 +217,12 @@ for configuration recipes.
           opts = { enter = true, format = "details" },
           filter = { error = true },
           filter_opts = { reverse = true },
+        },
+        all = {
+          -- options for the message history that you get with `:Noice`
+          view = "split",
+          opts = { enter = true, format = "details" },
+          filter = {},
         },
       },
       notify = {
@@ -414,7 +421,7 @@ FILTERS                       *noice.nvim-noice-(nice,-noise,-notice)-filters*
   mode         string     checks if vim.api.nvim_get_mode() contains the given
                           mode
 
-  not          filter     checks wether the filter matches or not
+  not          filter     checks whether the filter matches or not
 
   warning      boolean    all warning-like kinds from ext_messages
   ------------------------------------------------------------------------------

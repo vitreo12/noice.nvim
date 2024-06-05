@@ -17,11 +17,16 @@ end
 
 function M.enable()
   M.reset_augroup()
-  M.fix_incsearch()
   M.fix_input()
   M.fix_redraw()
   M.fix_cmp()
   M.fix_vim_sleuth()
+  -- M.fix_cmdpreview()
+
+  -- Hacks for Neovim < 0.10
+  if vim.fn.has("nvim-0.10") == 0 then
+    M.fix_incsearch()
+  end
 end
 
 function M.fix_vim_sleuth()
@@ -54,7 +59,11 @@ end
 
 ---@see https://github.com/neovim/neovim/issues/20793
 function M.draw_cursor()
-  require("noice.util.ffi").setcursor_mayforce(true)
+  if vim.api.nvim__redraw then
+    vim.api.nvim__redraw({ cursor = true })
+  else
+    require("noice.util.ffi").setcursor_mayforce(true)
+  end
 end
 
 ---@see https://github.com/neovim/neovim/issues/17810
@@ -233,15 +242,30 @@ function M.fix_cmp()
   end)
 end
 
+function M.fix_cmdpreview()
+  vim.api.nvim_create_autocmd("CmdlineChanged", {
+    group = M.group,
+    callback = function()
+      local ffi = require("noice.util.ffi")
+      ffi.cmdpreview = false
+      vim.cmd([[redraw]])
+      Util.try(require("noice.message.router").update)
+    end,
+  })
+end
+
+M.SPECIAL = "Þ"
 function M.cmdline_force_redraw()
+  if vim.fn.has("nvim-0.11") == 1 then
+    -- no longer needed on nightly
+    return
+  end
   if not require("noice.util.ffi").cmdpreview then
     return
   end
 
-  -- HACK: this will trigger redraw during substitute and cmdpreview,
-  -- but when moving the cursor, the screen will be cleared until
-  -- a new character is entered
-  vim.api.nvim_input(" <bs>")
+  -- HACK: this will trigger redraw during substitute and cmdpreview
+  vim.api.nvim_feedkeys(M.SPECIAL .. Util.BS, "n", true)
 end
 
 ---@type string?

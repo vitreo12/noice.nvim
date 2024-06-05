@@ -32,7 +32,7 @@ Check this [tracking issue](https://github.com/folke/noice.nvim/issues/6) for a 
 
 ## ⚡️ Requirements
 
-- Neovim >= 0.8.0 **_(nightly highly recommended)_**
+- Neovim >= 0.9.0 **_(nightly highly recommended)_**
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim): used for proper rendering and multiple views
 - [nvim-notify](https://github.com/rcarriga/nvim-notify): notification view _**(optional)**_
 - a [Nerd Font](https://www.nerdfonts.com/) **_(optional)_**
@@ -72,7 +72,7 @@ require("noice").setup({
     override = {
       ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
       ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
+      ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
     },
   },
   -- you can enable a preset for easier configuration
@@ -196,6 +196,12 @@ Check the [wiki](https://github.com/folke/noice.nvim/wiki/Configuration-Recipes)
       opts = { enter = true, format = "details" },
       filter = { error = true },
       filter_opts = { reverse = true },
+    },
+    all = {
+      -- options for the message history that you get with `:Noice`
+      view = "split",
+      opts = { enter = true, format = "details" },
+      filter = {},
     },
   },
   notify = {
@@ -371,7 +377,7 @@ Check the [wiki](https://github.com/folke/noice.nvim/wiki/Configuration-Recipes)
 | **min_length** | `number`               | minimum length of the message (total width of all the lines)                                                             |
 | **min_width**  | `number`               | minimum width of the message                                                                                             |
 | **mode**       | `string`               | checks if `vim.api.nvim_get_mode()` contains the given mode                                                              |
-| **not**        | `filter`               | checks wether the filter matches or not                                                                                  |
+| **not**        | `filter`               | checks whether the filter matches or not                                                                                 |
 | **warning**    | `boolean`              | all warning-like kinds from `ext_messages`                                                                               |
 
 <details>

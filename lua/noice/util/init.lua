@@ -5,9 +5,24 @@ local Config = require("noice.config")
 
 local M = {}
 
+M.islist = vim.islist or vim.tbl_islist
+
 M.stats = require("noice.util.stats")
 M.call = require("noice.util.call")
 M.nui = require("noice.util.nui")
+
+function M.t(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+M.CR = M.t("<cr>")
+M.ESC = M.t("<esc>")
+M.BS = M.t("<bs>")
+M.EXIT = M.t("<C-\\><C-n>")
+M.LUA_CALLBACK = "\x80\253g"
+M.RIGHT = M.t("<right>")
+M.LEFT = M.t("<left>")
+M.CMD = "\x80\253h"
 
 ---@generic F: fun()
 ---@param fn F
@@ -43,11 +58,22 @@ function M.open(uri)
   end
 end
 
+---@param fn fun():any
+function M.ignore_events(fn)
+  local ei = vim.go.eventignore
+  vim.go.eventignore = "all"
+  local ret = fn()
+  vim.go.eventignore = ei
+  return ret
+end
+
 function M.tag(buf, tag)
-  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+  local ft = vim.bo[buf].filetype
 
   if ft == "" then
-    vim.api.nvim_buf_set_option(buf, "filetype", "noice")
+    M.ignore_events(function()
+      vim.bo[buf].filetype = "noice"
+    end)
   end
 
   if Config.options.debug and vim.api.nvim_buf_get_name(buf) == "" then
@@ -191,6 +217,14 @@ function M._diff(a, b)
   return false
 end
 
+function M.is_search()
+  local cmdline = require("noice.ui.cmdline")
+  local c = cmdline.active
+  if c and (c.state.firstc == "/" or c.state.firstc == "?") then
+    return true
+  end
+end
+
 ---@param opts? {blocking:boolean, mode:boolean, input:boolean, redraw:boolean}
 function M.is_blocking(opts)
   opts = vim.tbl_deep_extend("force", {
@@ -297,7 +331,17 @@ function M.info(msg, ...)
   M.notify(msg, vim.log.levels.INFO, ...)
 end
 
+---@param data any
 function M.debug(data)
+  if not Config.options.debug then
+    return
+  end
+  if type(data) == "function" then
+    data = data()
+  end
+  if type(data) ~= "string" then
+    data = vim.inspect(data)
+  end
   local file = "./noice.log"
   local fd = io.open(file, "a+")
   if not fd then

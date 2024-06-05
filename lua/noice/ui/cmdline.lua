@@ -24,6 +24,7 @@ M.events = {
 
 ---@type NoiceCmdline?
 M.active = nil
+M.real_cursor = vim.api.nvim__redraw ~= nil
 
 ---@alias NoiceCmdlineFormatter fun(cmdline: NoiceCmdline): {icon?:string, offset?:number, view?:NoiceViewOptions}
 
@@ -111,6 +112,7 @@ end
 ---@param text_only? boolean
 function Cmdline:format(message, text_only)
   local format = self:get_format()
+  message.fix_cr = false
 
   if format.icon then
     message:append(NoiceText.virtual_text(format.icon, format.icon_hl_group))
@@ -141,6 +143,7 @@ function Cmdline:format(message, text_only)
   if not text_only then
     local cursor = NoiceText.cursor(-self:length() + self.state.pos)
     cursor.on_render = M.on_render
+    cursor.enabled = not M.real_cursor
     message:append(cursor)
   end
 end
@@ -155,6 +158,7 @@ end
 
 ---@type NoiceCmdline[]
 M.cmdlines = {}
+M.skipped = false
 
 function M.on_show(event, content, pos, firstc, prompt, indent, level)
   local c = Cmdline({
@@ -166,6 +170,14 @@ function M.on_show(event, content, pos, firstc, prompt, indent, level)
     indent = indent,
     level = level,
   })
+
+  -- This was triggered by a force redraw, so skip it
+  if c:get():find(Hacks.SPECIAL, 1, true) then
+    M.skipped = true
+    return
+  end
+  M.skipped = false
+
   local last = M.cmdlines[level] and M.cmdlines[level].state
   if not vim.deep_equal(c.state, last) then
     M.active = c
@@ -188,7 +200,11 @@ function M.on_hide(_, level)
 end
 
 function M.on_pos(_, pos, level)
-  if M.cmdlines[level] and M.cmdlines[level].state.pos ~= pos then
+  if M.skipped then
+    return
+  end
+  local c = M.cmdlines[level]
+  if c and c.state.pos ~= pos then
     M.cmdlines[level].state.pos = pos
     M.update()
   end
@@ -197,9 +213,33 @@ end
 ---@class CmdlinePosition
 ---@field win number Window containing the cmdline
 ---@field buf number Buffer containing the cmdline
+---@field cursor number
 ---@field bufpos {row:number, col:number} (1-0)-indexed position of the cmdline in the buffer
 ---@field screenpos {row:number, col:number} (1-0)-indexed screen position of the cmdline
 M.position = nil
+
+function M.fix_cursor()
+  if not M.position then
+    return
+  end
+  local win = M.position.win
+  local cursor = M.position.cursor
+  if vim.api.nvim_win_is_valid(win) then
+    vim.api.nvim_win_set_cursor(win, { 1, cursor })
+    vim.api.nvim_win_call(win, function()
+      local width = vim.api.nvim_win_get_width(win)
+      local leftcol = math.max(cursor - width + 1, 0)
+      vim.fn.winrestview({ leftcol = leftcol })
+    end)
+    if M.real_cursor then
+      vim.cmd.redrawstatus()
+      vim.api.nvim__redraw({
+        cursor = true,
+        win = win,
+      })
+    end
+  end
+end
 
 ---@param buf number
 ---@param line number
@@ -213,19 +253,12 @@ function M.on_render(_, buf, line, byte)
     local cmdline_start = byte - (M.last():length() - M.last().offset)
 
     local cursor = byte - M.last():length() + M.last().state.pos
-    vim.schedule(function()
-      if vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_set_cursor(win, { 1, cursor })
-        vim.api.nvim_win_call(win, function()
-          local width = vim.api.nvim_win_get_width(win)
-          local leftcol = math.max(cursor - width + 1, 0)
-          vim.fn.winrestview({ leftcol = leftcol })
-        end)
-      end
-    end)
+
+    pcall(M.fix_cursor)
 
     local pos = vim.fn.screenpos(win, line, cmdline_start)
     M.position = {
+      cursor = cursor,
       buf = buf,
       win = win,
       bufpos = {
@@ -251,11 +284,15 @@ function M.update()
 
   if cmdline then
     cmdline:format(M.message)
-    Hacks.hide_cursor()
+    if not M.real_cursor then
+      Hacks.hide_cursor()
+    end
     Manager.add(M.message)
   else
     Manager.remove(M.message)
-    Hacks.show_cursor()
+    if not M.real_cursor then
+      Hacks.show_cursor()
+    end
   end
 end
 

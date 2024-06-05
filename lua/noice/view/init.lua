@@ -26,6 +26,7 @@ local Format = require("noice.text.format")
 ---@field _route_opts NoiceViewOptions
 ---@field _visible boolean
 ---@field _instance "opts" | "view" | "backend"
+---@field _errors integer
 ---@overload fun(opts?: NoiceViewOptions): NoiceView
 local View = Object("NoiceView")
 
@@ -80,6 +81,7 @@ function View:init(opts)
   self._visible = false
   self._view_opts = vim.deepcopy(self._opts)
   self._instance = "opts"
+  self._errors = 0
   self:update_options()
 end
 
@@ -94,7 +96,7 @@ function View:update_options() end
 function View:push(messages, opts)
   opts = opts or {}
 
-  messages = vim.tbl_islist(messages) and messages or { messages }
+  messages = Util.islist(messages) and messages or { messages }
   ---@cast messages NoiceMessage[]
 
   for _, message in ipairs(messages) do
@@ -132,12 +134,32 @@ function View:set(messages, opts)
   self:push(messages, opts)
 end
 
+function View:debug(msg)
+  if Config.options.debug then
+    Util.debug(("[%s] %s"):format(self._opts.view, vim.inspect(msg)))
+    Util.debug(debug.traceback())
+  end
+end
+
+-- Safely destroys any create windows and buffers.
+-- This is needed to properly re-create views in case of E565 errors
+function View:destroy() end
+
 function View:display()
   if #self._messages > 0 then
     Format.align(self._messages, self._opts.align)
     self:check_options()
 
-    Util.try(self.show, self)
+    Util.protect(function()
+      self._errors = self._errors + 1
+      self:show()
+      self._errors = 0
+    end, {
+      catch = function(err)
+        self:debug(err)
+        self:destroy()
+      end,
+    })()
 
     self._visible = true
   else
@@ -221,7 +243,9 @@ function View:render(buf, opts)
   local linenr = opts.offset or 1
 
   if self._opts.buf_options then
-    require("nui.utils")._.set_buf_options(buf, self._opts.buf_options)
+    Util.ignore_events(function()
+      require("nui.utils")._.set_buf_options(buf, self._opts.buf_options)
+    end)
   end
 
   if self._opts.lang and not vim.b[buf].ts_highlight then

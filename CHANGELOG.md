@@ -1,5 +1,131 @@
 # Changelog
 
+## [4.0.1](https://github.com/folke/noice.nvim/compare/v4.0.0...v4.0.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* **cmdline:** use real cursors on Neovim &gt;= 0.10 ([5b5fa91](https://github.com/folke/noice.nvim/commit/5b5fa91be6848583cbf824c69e67e26acf609ada))
+* disable noice on VimLeavePre so that the user can see exit errors ([31ec80c](https://github.com/folke/noice.nvim/commit/31ec80c99ee699ea4e90248c2e87e5a669be5e93))
+* fixup ([cfd7aa4](https://github.com/folke/noice.nvim/commit/cfd7aa4617024a9bd4f6409463c73f91a7f411b8))
+* fixup ([2bf0429](https://github.com/folke/noice.nvim/commit/2bf04290b32dc5b1a002a4888c95147bb91ec6f2))
+* reduce flickering when searching. See [#679](https://github.com/folke/noice.nvim/issues/679) ([4e1f9f1](https://github.com/folke/noice.nvim/commit/4e1f9f198226aea5b82a6df75e9913b49796cdda))
+* remove smart_move ([b6ae820](https://github.com/folke/noice.nvim/commit/b6ae820190dd166d6ebae408d65f2551e37c7bf2))
+* search IS blocking, but shouldnt trigger redraw. Fixes [#345](https://github.com/folke/noice.nvim/issues/345) ([b3f08e6](https://github.com/folke/noice.nvim/commit/b3f08e6cf0fd30847f299cc94707563920fd2139))
+
+## [4.0.0](https://github.com/folke/noice.nvim/compare/v3.0.2...v4.0.0) (2024-05-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove cmdpreview hack for nigytly since it's no longer needed there. Update your Nightlies!!
+
+### Bug Fixes
+
+* **markdown:** ignore empty completion documentation tables ([#820](https://github.com/folke/noice.nvim/issues/820)) ([f119045](https://github.com/folke/noice.nvim/commit/f119045f38792ad5311e5f9be7a879e4c1a95fe0))
+* remove cmdpreview hack for nigytly since it's no longer needed there. Update your Nightlies!! ([49caf99](https://github.com/folke/noice.nvim/commit/49caf99d6253a43bf55ea055f7fba6c4eb78be20))
+
+## [3.0.2](https://github.com/folke/noice.nvim/compare/v3.0.1...v3.0.2) (2024-05-22)
+
+
+### Bug Fixes
+
+* **markdown:** keys when buf is invalid ([0dc97cb](https://github.com/folke/noice.nvim/commit/0dc97cb21edac79a1d575541c57a31a3e3bd5b88))
+
+## [3.0.1](https://github.com/folke/noice.nvim/compare/v3.0.0...v3.0.1) (2024-05-18)
+
+
+### Bug Fixes
+
+* typo with hist messages. Fixes [#815](https://github.com/folke/noice.nvim/issues/815) ([a0a40d3](https://github.com/folke/noice.nvim/commit/a0a40d3e5fdb2eab005e2ee08c4af09c99fcb9a4))
+
+## [3.0.0](https://github.com/folke/noice.nvim/compare/v2.1.1...v3.0.0) (2024-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump required Neovim version to >= 0.9
+
+### Features
+
+* bump required Neovim version to &gt;= 0.9 ([6c5290a](https://github.com/folke/noice.nvim/commit/6c5290ad947a97c34889debe59bafe771a9f9578))
+* **util:** better debug log ([217c684](https://github.com/folke/noice.nvim/commit/217c6848a6656c5e187d66a2b3caed9a9676d448))
+
+
+### Bug Fixes
+
+* **cmdline:** use other work-around for cmdpreview ([6a3721b](https://github.com/folke/noice.nvim/commit/6a3721b03dbeb10c3b1c47f63fdc2d77bb550550))
+* **msg:** add historical messages as a msg_show instead of history so it doesnt popup ([b9b4818](https://github.com/folke/noice.nvim/commit/b9b481864d0d91c7df539ecebb30a2235a3678da))
+* **ui:** dont try updating the ui during textlock ([4ef75a3](https://github.com/folke/noice.nvim/commit/4ef75a3c3893f9efcaf078e60280a9247b9876ff))
+
+## [2.1.1](https://github.com/folke/noice.nvim/compare/v2.1.0...v2.1.1) (2024-05-16)
+
+
+### Bug Fixes
+
+* fixed check on get_clients. Fixes [#806](https://github.com/folke/noice.nvim/issues/806) ([588471b](https://github.com/folke/noice.nvim/commit/588471bdf26d8fde3fa1672339339a18e1b8568a))
+
+## [2.1.0](https://github.com/folke/noice.nvim/compare/v2.0.3...v2.1.0) (2024-05-16)
+
+
+### Features
+
+* **config:** added `Noice all` to show ALL messages captured by Noice. See [#769](https://github.com/folke/noice.nvim/issues/769) ([72f72d3](https://github.com/folke/noice.nvim/commit/72f72d3271109ea37128681766de068b62947647))
+
+
+### Bug Fixes
+
+* **cmdline:** yet another work-around that no longer temporarily changes the cmdline ([68b9c53](https://github.com/folke/noice.nvim/commit/68b9c5395a5e0f4462b4f38791018a48e6929cd9))
+* depraction warnings on Neovim 0.11 ([9946087](https://github.com/folke/noice.nvim/commit/9946087bb51a5bfb99efcd1527ef7fe46574cf2f))
+* **format:** config.format doesn't work ([#772](https://github.com/folke/noice.nvim/issues/772)) ([09708be](https://github.com/folke/noice.nvim/commit/09708be5668762062d619fddf6cb2b68d165a9c2))
+* **messages:** include any messages before Noice was started as one history_show message. Fixes [#799](https://github.com/folke/noice.nvim/issues/799) ([61947de](https://github.com/folke/noice.nvim/commit/61947de3d5904375ea94e0c13db2537488ad9829))
+* **messages:** only add previous messages once when Noice starts. Fixes [#804](https://github.com/folke/noice.nvim/issues/804) ([269de18](https://github.com/folke/noice.nvim/commit/269de18e0c4682c8964f278b4fbb9f6ef9a52cd3))
+* **msg:** update router when blocking ([ee433a7](https://github.com/folke/noice.nvim/commit/ee433a724c31858537a7d8c80d09c7686810da4a))
+* **router:** add additional updates on `SafeState` when available ([fff989f](https://github.com/folke/noice.nvim/commit/fff989f7e5fd3c1e307ac8b92de26be837b18c81))
+* **router:** don't use `SafeState` since apparently this is a nightly thing and seems to work without. Fixes [#805](https://github.com/folke/noice.nvim/issues/805) ([ef085e9](https://github.com/folke/noice.nvim/commit/ef085e9cf9ab15a679a403dcfbafba08b9c6cbec))
+* **router:** remove SafeState again, since it breaks incsearch ([3c3a8f3](https://github.com/folke/noice.nvim/commit/3c3a8f30061bfbb73308e221d760a3c7c6526473))
+
+
+### Performance Improvements
+
+* **cmdline:** prevent unneeded redraws during cmdline preview (substitute). Fixes [#803](https://github.com/folke/noice.nvim/issues/803) ([8d924eb](https://github.com/folke/noice.nvim/commit/8d924ebc8e5c28ee30793c30b57d9670884bf05b))
+* **ui_attach:** router now only queues messages in `vim.ui_attach`. Use `SafeState` to execute queue when needed. ([4c26991](https://github.com/folke/noice.nvim/commit/4c2699111730a14144224d7b193bede6b707b1bc))
+
+## [2.0.3](https://github.com/folke/noice.nvim/compare/v2.0.2...v2.0.3) (2024-05-15)
+
+
+### Bug Fixes
+
+* **hacks:** use feedkeys instead of input to force redraw ([dbf8d70](https://github.com/folke/noice.nvim/commit/dbf8d708a46c9d5a6c79f8fc77ac4ffa04d3f0d9))
+* **nui:** safely destroy any create window/buffers during E565 errors. Fixes command preview ([a0c6203](https://github.com/folke/noice.nvim/commit/a0c6203d551242322ac7995b26d4e320140e05b1))
+
+## [2.0.2](https://github.com/folke/noice.nvim/compare/v2.0.1...v2.0.2) (2024-05-09)
+
+
+### Bug Fixes
+
+* **cmdpreview:** read the variable `cmdpreview` in nvim-0.9+ on windows ([#774](https://github.com/folke/noice.nvim/issues/774)) ([a35003d](https://github.com/folke/noice.nvim/commit/a35003dbdd9c8d6d05aa47064de2b76ace872ec4))
+* disable incsearch hack for nightly (no longer needed) ([02d698a](https://github.com/folke/noice.nvim/commit/02d698ac0d294e2195429662d0d1cae6cd9a5621))
+* **progress:** Change LspProgress data field `result` to `params` ([#785](https://github.com/folke/noice.nvim/issues/785)) ([89de3b5](https://github.com/folke/noice.nvim/commit/89de3b56abee53783dca3500115891fb827669d6))
+* retry rendering only once to prevent rendering loops ([f4decbc](https://github.com/folke/noice.nvim/commit/f4decbc7a80229ccc9f86026b74bdcf0c39e38a7))
+* **router:** make sure we retry views that could not render due to E565. Fixes [#783](https://github.com/folke/noice.nvim/issues/783) ([6df3d8a](https://github.com/folke/noice.nvim/commit/6df3d8acea83b531deca29e18c64783a3eac106d))
+* use `vim.api.nvim__redraw` to update cursor on nightly instead of ffi. Fixes [#781](https://github.com/folke/noice.nvim/issues/781) ([37c8124](https://github.com/folke/noice.nvim/commit/37c8124ee8aac0614a7221c335a97db9ed5e40f3))
+
+## [2.0.1](https://github.com/folke/noice.nvim/compare/v2.0.0...v2.0.1) (2024-03-26)
+
+
+### Bug Fixes
+
+* **input:** don't filter ^M and &lt;cr&gt; for the command line ([#734](https://github.com/folke/noice.nvim/issues/734)) ([d29b26c](https://github.com/folke/noice.nvim/commit/d29b26c329558ee4bb2e7f3cc25078929ef89b2f))
+* lsp message view not effective ([#747](https://github.com/folke/noice.nvim/issues/747)) ([2640d39](https://github.com/folke/noice.nvim/commit/2640d3975d47156c412db6e974a1b1280ff46aab))
+* **popup:** don't make the window column go below negative 1 ([#737](https://github.com/folke/noice.nvim/issues/737)) ([01b2b53](https://github.com/folke/noice.nvim/commit/01b2b5316eb6986cc763e7b4f0f0e0f60d2a344b))
+
+
+### Performance Improvements
+
+* ignore events when setting buf options during render. Fixes [#694](https://github.com/folke/noice.nvim/issues/694) ([bf67d70](https://github.com/folke/noice.nvim/commit/bf67d70bd7265d075191e7812d8eb42b9791f737))
+* **lsp:** update lsp progress messages at most every 100ms ([9a9756d](https://github.com/folke/noice.nvim/commit/9a9756d6999abc016c087b9d3fcea3c9de99be98))
+
 ## [2.0.0](https://github.com/folke/noice.nvim/compare/v1.16.3...v2.0.0) (2023-10-25)
 
 

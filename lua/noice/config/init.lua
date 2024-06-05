@@ -96,6 +96,12 @@ function M.defaults()
         filter = { error = true },
         filter_opts = { reverse = true },
       },
+      all = {
+        -- options for the message history that you get with `:Noice`
+        view = "split",
+        opts = { enter = true, format = "details" },
+        filter = {},
+      },
     },
     notify = {
       -- Noice can be used as `vim.notify` so you can route any notification like other messages
@@ -115,7 +121,7 @@ function M.defaults()
         format = "lsp_progress",
         --- @type NoiceFormat|string
         format_done = "lsp_progress_done",
-        throttle = 1000 / 30, -- frequency to update lsp progress message
+        throttle = 1000 / 10, -- frequency to update lsp progress message
         view = "mini",
       },
       override = {
@@ -179,12 +185,6 @@ function M.defaults()
     },
     health = {
       checker = true, -- Disable if you don't want health checks to run
-    },
-    smart_move = {
-      -- noice tries to move out of the way of existing floating windows.
-      enabled = true, -- you can disable this behaviour here
-      -- add any filetypes here, that shouldn't trigger smart move.
-      excluded_filetypes = { "cmp_menu", "cmp_docs", "notify" },
     },
     ---@type NoicePresets
     presets = {

@@ -67,7 +67,7 @@ function M.overlap(win1, win2)
 
   -- # compute the intersection over union by taking the intersection
   -- # area and dividing it by the sum of prediction + ground-truth
-  -- # areas - the interesection area
+  -- # areas - the intersection area
   return intersection_area / (bb1_area + bb2_area - intersection_area)
 end
 
@@ -128,7 +128,7 @@ function M.normalize_padding(opts)
     opts = { style = opts }
   end
 
-  if vim.tbl_islist(opts.padding) then
+  if Util.islist(opts.padding) then
     if #opts.padding == 2 then
       return {
         top = opts.padding[1],
